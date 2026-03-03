@@ -1,0 +1,497 @@
+services:
+  # ----------------------------------------------------------------
+  # 1. Config Server Replica Set (CSRS) - 3 NODOS
+  # ----------------------------------------------------------------
+  mongo-config-srv1:
+    image: mongo:latest
+    container_name: mongo-config-srv1
+    command: bash -c "chmod 400 /etc/mongo/mongo.keyfile && mongod --config /etc/mongo/mongo.conf"
+    volumes:
+      - config_data1:/data/db
+      - ./mongo-conf/config-srv.conf:/etc/mongo/mongo.conf:ro
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+      - ./certs/mongo-config-srv1.pem:/etc/ssl/mongo/mongodb.pem:ro
+      - ./mongo-keyfile:/etc/mongo/mongo.keyfile
+    networks:
+      - nosql-net
+    ports:
+      - "27019:27019"
+
+  mongo-config-srv2:
+    image: mongo:latest
+    container_name: mongo-config-srv2
+    command: bash -c "chmod 400 /etc/mongo/mongo.keyfile && mongod --config /etc/mongo/mongo.conf"
+    volumes:
+      - config_data2:/data/db
+      - ./mongo-conf/config-srv.conf:/etc/mongo/mongo.conf:ro
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+      - ./certs/mongo-config-srv2.pem:/etc/ssl/mongo/mongodb.pem:ro
+      - ./mongo-keyfile:/etc/mongo/mongo.keyfile
+    networks:
+      - nosql-net
+
+  mongo-config-srv3:
+    image: mongo:latest
+    container_name: mongo-config-srv3
+    command: bash -c "chmod 400 /etc/mongo/mongo.keyfile && mongod --config /etc/mongo/mongo.conf"
+    volumes:
+      - config_data3:/data/db
+      - ./mongo-conf/config-srv.conf:/etc/mongo/mongo.conf:ro
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+      - ./certs/mongo-config-srv3.pem:/etc/ssl/mongo/mongodb.pem:ro
+      - ./mongo-keyfile:/etc/mongo/mongo.keyfile
+    networks:
+      - nosql-net
+
+  # ----------------------------------------------------------------
+  # 2. Shard 1 Replica Set (RS1) - 3 NODOS
+  # ----------------------------------------------------------------
+  mongo-shard1-rs1:
+    image: mongo:latest
+    container_name: mongo-shard1-rs1
+    command: bash -c "chmod 400 /etc/mongo/mongo.keyfile && mongod --config /etc/mongo/mongo.conf --replSet rs-shard1"
+    volumes:
+      - shard1_data1:/data/db
+      - ./mongo-conf/shard-srv.conf:/etc/mongo/mongo.conf:ro
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+      - ./certs/mongo-shard1-rs1.pem:/etc/ssl/mongo/mongodb.pem:ro
+      - ./mongo-keyfile:/etc/mongo/mongo.keyfile
+    networks:
+      - nosql-net
+    ports:
+      - "27017:27017" # Solo para el script de init
+
+  mongo-shard1-rs2:
+    image: mongo:latest
+    container_name: mongo-shard1-rs2
+    command: bash -c "chmod 400 /etc/mongo/mongo.keyfile && mongod --config /etc/mongo/mongo.conf --replSet rs-shard1"1
+    volumes:
+      - shard1_data2:/data/db
+      - ./mongo-conf/shard-srv.conf:/etc/mongo/mongo.conf:ro
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+      - ./certs/mongo-shard1-rs2.pem:/etc/ssl/mongo/mongodb.pem:ro
+      - ./mongo-keyfile:/etc/mongo/mongo.keyfile
+    networks:
+      - nosql-net
+
+  mongo-shard1-rs3:
+    image: mongo:latest
+    container_name: mongo-shard1-rs3
+    command: bash -c "chmod 400 /etc/mongo/mongo.keyfile && mongod --config /etc/mongo/mongo.conf --replSet rs-shard1"
+    volumes:
+      - shard1_data3:/data/db
+      - ./mongo-conf/shard-srv.conf:/etc/mongo/mongo.conf:ro
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+      - ./certs/mongo-shard1-rs3.pem:/etc/ssl/mongo/mongodb.pem:ro
+      - ./mongo-keyfile:/etc/mongo/mongo.keyfile
+    networks:
+      - nosql-net
+
+  # ----------------------------------------------------------------
+  # 3. Shard 2 Replica Set (RS2) - 3 NODOS
+  # ----------------------------------------------------------------
+  mongo-shard2-rs1:
+    image: mongo:latest
+    container_name: mongo-shard2-rs1
+    command: bash -c "chmod 400 /etc/mongo/mongo.keyfile && mongod --config /etc/mongo/mongo.conf --replSet rs-shard2"
+    volumes:
+      - shard2_data1:/data/db
+      - ./mongo-conf/shard-srv.conf:/etc/mongo/mongo.conf:ro
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+      - ./certs/mongo-shard2-rs1.pem:/etc/ssl/mongo/mongodb.pem:ro
+      - ./mongo-keyfile:/etc/mongo/mongo.keyfile
+    networks:
+      - nosql-net
+
+  mongo-shard2-rs2:
+    image: mongo:latest
+    container_name: mongo-shard2-rs2
+    command: bash -c "chmod 400 /etc/mongo/mongo.keyfile && mongod --config /etc/mongo/mongo.conf --replSet rs-shard2"
+    volumes:
+      - shard2_data2:/data/db
+      - ./mongo-conf/shard-srv.conf:/etc/mongo/mongo.conf:ro
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+      - ./certs/mongo-shard2-rs2.pem:/etc/ssl/mongo/mongodb.pem:ro
+      - ./mongo-keyfile:/etc/mongo/mongo.keyfile
+    networks:
+      - nosql-net
+
+  mongo-shard2-rs3:
+    image: mongo:latest
+    container_name: mongo-shard2-rs3
+    command: bash -c "chmod 400 /etc/mongo/mongo.keyfile && mongod --config /etc/mongo/mongo.conf --replSet rs-shard2"
+    volumes:
+      - shard2_data3:/data/db
+      - ./mongo-conf/shard-srv.conf:/etc/mongo/mongo.conf:ro
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+      - ./certs/mongo-shard2-rs3.pem:/etc/ssl/mongo/mongodb.pem:ro
+      - ./mongo-keyfile:/etc/mongo/mongo.keyfile
+    networks:
+      - nosql-net
+
+  # ----------------------------------------------------------------
+  # 4. Shard 3 Replica Set (RS3) - 3 NODOS
+  # ----------------------------------------------------------------
+  mongo-shard3-rs1:
+    image: mongo:latest
+    container_name: mongo-shard3-rs1
+    command: bash -c "chmod 400 /etc/mongo/mongo.keyfile && mongod --config /etc/mongo/mongo.conf --replSet rs-shard3"
+    volumes:
+      - shard3_data1:/data/db
+      - ./mongo-conf/shard-srv.conf:/etc/mongo/mongo.conf:ro
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+      - ./certs/mongo-shard3-rs1.pem:/etc/ssl/mongo/mongodb.pem:ro
+      - ./mongo-keyfile:/etc/mongo/mongo.keyfile
+    networks:
+      - nosql-net
+
+  mongo-shard3-rs2:
+    image: mongo:latest
+    container_name: mongo-shard3-rs2
+    command: bash -c "chmod 400 /etc/mongo/mongo.keyfile && mongod --config /etc/mongo/mongo.conf --replSet rs-shard3"
+    volumes:
+      - shard3_data2:/data/db
+      - ./mongo-conf/shard-srv.conf:/etc/mongo/mongo.conf:ro
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+      - ./certs/mongo-shard3-rs2.pem:/etc/ssl/mongo/mongodb.pem:ro
+      - ./mongo-keyfile:/etc/mongo/mongo.keyfile
+    networks:
+      - nosql-net
+
+  mongo-shard3-rs3:
+    image: mongo:latest
+    container_name: mongo-shard3-rs3
+    command: bash -c "chmod 400 /etc/mongo/mongo.keyfile && mongod --config /etc/mongo/mongo.conf --replSet rs-shard3"
+    volumes:
+      - shard3_data3:/data/db
+      - ./mongo-conf/shard-srv.conf:/etc/mongo/mongo.conf:ro
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+      - ./certs/mongo-shard3-rs3.pem:/etc/ssl/mongo/mongodb.pem:ro
+      - ./mongo-keyfile:/etc/mongo/mongo.keyfile
+    networks:
+      - nosql-net
+
+  # ----------------------------------------------------------------
+  # 5. Routers (Mongos) - 2 NODOS
+  # ----------------------------------------------------------------
+  mongo-router-1:
+    image: mongo:latest
+    container_name: mongo-router-1
+    command: bash -c "chmod 400 /etc/mongo/mongo.keyfile && mongos --config /etc/mongo/mongo.conf"
+    volumes:
+      - ./mongo-conf/mongos-router.conf:/etc/mongo/mongo.conf:ro
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+      - ./certs/mongo-lb.pem:/etc/ssl/mongo/mongodb.pem:ro # Certificado del LB
+      - ./mongo-keyfile:/etc/mongo/mongo.keyfile
+    networks:
+      - nosql-net
+    depends_on:
+      - mongo-config-srv1
+      - mongo-config-srv2
+      - mongo-config-srv3
+
+  mongo-router-2:
+    image: mongo:latest
+    container_name: mongo-router-2
+    command: bash -c "chmod 400 /etc/mongo/mongo.keyfile && mongos --config /etc/mongo/mongo.conf"
+    volumes:
+      - ./mongo-conf/mongos-router.conf:/etc/mongo/mongo.conf:ro
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+      - ./certs/mongo-lb.pem:/etc/ssl/mongo/mongodb.pem:ro # Certificado del LB
+      - ./mongo-keyfile:/etc/mongo/mongo.keyfile
+    networks:
+      - nosql-net
+    depends_on:
+      - mongo-config-srv1
+      - mongo-config-srv2
+      - mongo-config-srv3
+
+  # ----------------------------------------------------------------
+  # 6. Balanceador de Carga Nginx
+  # ----------------------------------------------------------------
+  mongo-lb:
+    image: nginx:latest
+    container_name: mongo-lb
+    volumes:
+      - ./mongo-conf/nginx.conf:/etc/nginx/nginx.conf:ro
+    networks:
+      - nosql-net
+    ports:
+      # --- ESTE ES EL NUEVO PUNTO DE ENTRADA AL CLÚSTER ---
+      - "27018:27017" # Host: 27018 -> Nginx: 27017
+    depends_on:
+      - mongo-router-1
+      - mongo-router-2
+
+  # ----------------------------------------------------------------
+  # 7. Kafka, Zookeeper, ELK (Sin cambios)
+  # ----------------------------------------------------------------
+
+  zookeeper:
+    image: confluentinc/cp-zookeeper:latest 
+    container_name: zookeeper
+    networks:
+      - nosql-net
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+      ZOOKEEPER_TICK_TIME: 2000
+      # --- ¡ESTAS SON LAS LÍNEAS CLAVE! ---
+      # Le decimos a Zookeeper dónde guardar sus cosas:
+      ZOOKEEPER_DATA_DIR: /var/lib/zookeeper/data
+      ZOOKEEPER_DATA_LOG_DIR: /var/lib/zookeeper/log
+      # ---
+    volumes:
+      # Montamos los dos volúmenes persistentes:
+      - zookeeper_data:/var/lib/zookeeper/data
+      - zookeeper_datalog:/var/lib/zookeeper/log
+      
+  
+  kafka:
+    image: confluentinc/cp-kafka:7.4.0
+    container_name: kafka
+    depends_on:
+      - zookeeper
+    ports:
+      - "9092:9092"
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+      KAFKA_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://0.0.0.0:9092
+      KAFKA_ADVERTISED_LISTENERS: INTERNAL://kafka:29092,EXTERNAL://host.docker.internal:9092
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: INTERNAL:PLAINTEXT,EXTERNAL:PLAINTEXT
+      KAFKA_INTER_BROKER_LISTENER_NAME: INTERNAL
+      ALLOW_PLAINTEXT_LISTENER: "yes"
+    volumes:
+      - kafka_data:/var/lib/kafka/data
+    networks:
+      - nosql-net
+
+  elasticsearch:
+     image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+     container_name: elasticsearch
+     ports:
+       - "9200:9200"
+     environment:
+       - discovery.type=single-node
+       - network.host=0.0.0.0
+       - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+     volumes:
+       - es_data:/usr/share/elasticsearch/data
+     networks:
+       - nosql-net
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.0
+    container_name: kibana
+    ports:
+      - "5601:5601"
+    depends_on:
+      - elasticsearch
+    environment:
+      ELASTICSEARCH_HOSTS: http://elasticsearch:9200
+    volumes:
+      - kibana_data:/usr/share/kibana/data
+    networks:
+      - nosql-net
+      
+  # ----------------------------------------------------------------
+  # 8. Servicio de Inicialización del Cluster (CON AUTENTICACIÓN)
+  # ----------------------------------------------------------------
+  mongo-cluster-init:
+    image: mongo:latest
+    container_name: mongo-cluster-init
+    networks:
+      - nosql-net
+    depends_on:
+      - mongo-lb
+    volumes:
+      - ./certs/ca.crt:/etc/ssl/mongo/ca.crt:ro
+    command: |
+      bash -c '
+        # Definir credenciales
+        
+        echo "--- Iniciando script de configuración del clúster ---"
+        echo "--- Usuario: admin ---"
+        echo "--- Esperando 30 segundos a que arranquen los servicios... ---"
+        sleep 30
+
+        # ================================================================
+        # FASE 1: Crear usuario admin usando la excepción de localhost
+        # ================================================================
+        echo "--- FASE 1: Creando usuario administrador inicial ---"
+        
+        mongosh --host mongo-config-srv1 --port 27019 \
+          --tls \
+          --tlsCAFile /etc/ssl/mongo/ca.crt \
+          --tlsAllowInvalidHostnames \
+          --eval "
+            try {
+              db = db.getSiblingDB(\"admin\");
+              db.createUser({
+                user: \"admin\",
+                pwd: \"admin123\",
+                roles: [
+                  { role: \"root\", db: \"admin\" },
+                  { role: \"clusterAdmin\", db: \"admin\" }
+                ],
+                mechanisms: [\"SCRAM-SHA-256\"]
+              });
+              print(\"✅ Usuario admin creado exitosamente\");
+            } catch (e) {
+              if (e.code === 51003) {
+                print(\"ℹ️  Usuario admin ya existe\");
+              } else {
+                print(\"❌ Error creando usuario: \" + e);
+              }
+            }
+          "
+        
+        echo "--- Esperando 5s después de crear usuario... ---"
+        sleep 5
+
+        # ================================================================
+        # FASE 2: Inicializar Replica Sets CON AUTENTICACIÓN
+        # ================================================================
+        
+        echo "--- FASE 2: Iniciando Replica Set de Configuración (rs-config)... ---"
+        mongosh --host mongo-config-srv1 --port 27019 \
+          --tls \
+          --tlsCAFile /etc/ssl/mongo/ca.crt \
+          --tlsAllowInvalidHostnames \
+          --username "admin" \
+          --password "admin123" \
+          --authenticationDatabase admin \
+          --authenticationMechanism SCRAM-SHA-256 \
+          --eval "
+            rs.initiate({
+              _id: \"rs-config\",
+              configsvr: true,
+              members: [
+                { _id: 0, host: \"mongo-config-srv1:27019\" },
+                { _id: 1, host: \"mongo-config-srv2:27019\" },
+                { _id: 2, host: \"mongo-config-srv3:27019\" }
+              ]
+            })
+          "
+        
+        echo "--- Esperando 10s para elección de primario... ---"
+        sleep 10
+
+        echo "--- Iniciando Shard 1 (rs-shard1)... ---"
+        mongosh --host mongo-shard1-rs1 --port 27017 \
+          --tls \
+          --tlsCAFile /etc/ssl/mongo/ca.crt \
+          --tlsAllowInvalidHostnames \
+          --username "admin" \
+          --password "admin123" \
+          --authenticationDatabase admin \
+          --authenticationMechanism SCRAM-SHA-256 \
+          --eval "
+            rs.initiate({
+              _id: \"rs-shard1\",
+              members: [
+                { _id: 0, host: \"mongo-shard1-rs1:27017\" },
+                { _id: 1, host: \"mongo-shard1-rs2:27017\" },
+                { _id: 2, host: \"mongo-shard1-rs3:27017\" }
+              ]
+            })
+          "
+
+        echo "--- Iniciando Shard 2 (rs-shard2)... ---"
+        mongosh --host mongo-shard2-rs1 --port 27017 \
+          --tls \
+          --tlsCAFile /etc/ssl/mongo/ca.crt \
+          --tlsAllowInvalidHostnames \
+          --username "admin" \
+          --password "admin123" \
+          --authenticationDatabase admin \
+          --authenticationMechanism SCRAM-SHA-256 \
+          --eval "
+            rs.initiate({
+              _id: \"rs-shard2\",
+              members: [
+                { _id: 0, host: \"mongo-shard2-rs1:27017\" },
+                { _id: 1, host: \"mongo-shard2-rs2:27017\" },
+                { _id: 2, host: \"mongo-shard2-rs3:27017\" }
+              ]
+            })
+          "
+
+        echo "--- Iniciando Shard 3 (rs-shard3)... ---"
+        mongosh --host mongo-shard3-rs1 --port 27017 \
+          --tls \
+          --tlsCAFile /etc/ssl/mongo/ca.crt \
+          --tlsAllowInvalidHostnames \
+          --username "admin" \
+          --password "admin123" \
+          --authenticationDatabase admin \
+          --authenticationMechanism SCRAM-SHA-256 \
+          --eval "
+            rs.initiate({
+              _id: \"rs-shard3\",
+              members: [
+                { _id: 0, host: \"mongo-shard3-rs1:27017\" },
+                { _id: 1, host: \"mongo-shard3-rs2:27017\" },
+                { _id: 2, host: \"mongo-shard3-rs3:27017\" }
+              ]
+            })
+          "
+
+        echo "--- Esperando 15s para elección de primarios en shards... ---"
+        sleep 15
+
+        # ================================================================
+        # FASE 3: Añadir Shards al Router
+        # ================================================================
+        
+        echo "--- FASE 3: Añadiendo Shards al Router (a través de Nginx LB)... ---"
+        mongosh --host mongo-lb --port 27017 \
+          --tls \
+          --tlsCAFile /etc/ssl/mongo/ca.crt \
+          --tlsAllowInvalidHostnames \
+          --username "admin" \
+          --password "admin123" \
+          --authenticationDatabase admin \
+          --authenticationMechanism SCRAM-SHA-256 \
+          --eval "
+            sh.addShard(\"rs-shard1/mongo-shard1-rs1:27017,mongo-shard1-rs2:27017,mongo-shard1-rs3:27017\");
+            sh.addShard(\"rs-shard2/mongo-shard2-rs1:27017,mongo-shard2-rs2:27017,mongo-shard2-rs3:27017\");
+            sh.addShard(\"rs-shard3/mongo-shard3-rs1:27017,mongo-shard3-rs2:27017,mongo-shard3-rs3:27017\");
+            sh.status();
+          "
+        
+        echo "--- ✅ Clúster de MongoDB Sharded configurado y listo (con TLS + AUTH)! ---"
+      '
+    restart: "no"
+
+
+networks:
+  nosql-net:
+    driver: bridge
+
+volumes:
+  # Config server volumes
+  config_data1:
+  config_data2:
+  config_data3:
+  # Shard 1 volumes
+  shard1_data1:
+  shard1_data2:
+  shard1_data3:
+  # Shard 2 volumes
+  shard2_data1:
+  shard2_data2:
+  shard2_data3:
+  # Shard 3 volumes
+  shard3_data1:
+  shard3_data2:
+  shard3_data3:
+  # Other services
+  zookeeper_data:
+  zookeeper_datalog:
+  kafka_data:
+  es_data:
+  kibana_data:
